@@ -1,25 +1,35 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+// #include <string.h>
 
-
+#define MAX_USERNAME_SIZE 50
+#define MAX_PASSWORD_SIZE 10
+#define MAX_USERTYPE_SIZE 10
 struct Date {
     int day;
     int month;
     int year;
 };
 
-struct User {
-    char username[50];
-    char password[50];
-    char userType[20]; // Owner/Librarian/Member
+struct User_Creaditial {
+    char userEmail;
+    char password[MAX_PASSWORD_SIZE];
+    
 };
 
-struct Member {
+struct User {
     int memberId;
-    char memberName[100];
+    char memberName[MAX_USERNAME_SIZE];
+    char email;
+    char password[MAX_PASSWORD_SIZE];
     struct Date joinDate;
     int isPaidUser;
     float fineAmount;
+    char userType[MAX_USERTYPE_SIZE]; // Owner/Librarian/Member
 };
+
+struct User users[5];
 
 void inputDate(struct Date *d) {
     printf("Enter day, month, and year: ");
@@ -59,7 +69,6 @@ void addDaysInDate(struct Date *d,int days) {
     }
 }
 
-
 //function to find difference between two dates
 int daysDiffer(struct Date *d1, struct Date *d2) { 
     int daysDifference = 0;
@@ -80,26 +89,163 @@ int daysDiffer(struct Date *d1, struct Date *d2) {
     return daysDifference;
 }
 
+//function to Sign Up
+int signUp() {
+    
+    struct User newUser;
+    newUser.memberId = 0;
+    printf("Enter user Email\n");
+    scanf("%s",&newUser.email);
+    for(int i=0; i<5; i++) {
+        // printf("inside for loop\n");
+        int result = strcmp(&newUser.email, &users[i].email);
+        if(result == 0) {
+            printf("User is already exit");
+            return 0;
+        }
+        
+    }
+
+    printf("Enter user Password\n");
+    scanf("%s",&newUser.password);
+
+    printf("Enter user Name\n");
+    scanf("%s",&newUser.memberName);
+    
+    printf("Enter user isPaidUser \n");
+    scanf("%d",&newUser.isPaidUser);
+    
+    printf("Enter user amount\n");
+    scanf("%f",&newUser.fineAmount);
+    
+    int userTypeChoice;
+
+    printf("Select the user type:\n");
+    printf("1. Member\n");
+    printf("2. Owner\n");
+    printf("3. Librarian\n");
+    printf("Enter your choice: ");
+    scanf("%d", &userTypeChoice);
+    
+
+    switch (userTypeChoice) {
+        case 1:
+            strcpy(newUser.userType, "Member");
+            break;
+        case 2:
+            strcpy(newUser.userType, "Owner");
+            break;
+        case 3:
+            strcpy(newUser.userType, "Librarian");
+            break;
+        default:
+            printf("Invalid user type selection.\n");
+            break;
+    }
+    printf("Sign up successfully !!\n");
+    return 1;
+}
+
+void ownerMenu() {
+    printf("@@@@");
+}
+
+void librarianMenu() {
+    printf("####");
+}
+
+void memberMenu() {
+    printf("*****");
+}
+
+//function to sign in
+int signIn() {
+    char email;
+    char password[MAX_PASSWORD_SIZE];
+
+    printf("Enter your email: ");
+    scanf("%s", &email);
+
+    for (int i = 0; i < 5; i++) {
+        if (strcmp(email, users[i].email) == 0) {
+            printf("Enter your password: ");
+            scanf("%s", &password);
+
+            if (strcmp(password, users[i].password) == 0) {
+                printf("Sign-in successful!\n");
+                if (strcmp(users[i].userType, "Owner") == 0) {
+                        ownerMenu();
+                } else if (strcmp(users[i].userType, "Librarian") == 0) {
+                        librarianMenu();
+                } else if (strcmp(users[i].userType, "Member") == 0) {
+                        memberMenu();
+                } else {
+                    printf("Invalid user type.\n");
+                }
+                return 1;
+            } else {
+                printf("Incorrect password.\n");
+                return 0;
+            }
+        }
+    }
+}
+
+
+
+
 int main () {
     //inpute and display date
     struct Date d1, d2;
-    printf("Enter Date1 ");
-    inputDate(&d1);
-    displayDate(&d1);
+    // printf("Enter Date1 ");
+    // inputDate(&d1);
+    // displayDate(&d1);
     
-    printf("Enter Date2 ");
-    inputDate(&d2);
-    displayDate(&d2);
+    // printf("Enter Date2 ");
+    // inputDate(&d2);
+    // displayDate(&d2);
 
-    //add days in given date
+    int differenceInDays;
     int addDays;
-    printf("Add days in given date is ");
-    scanf("%d",&addDays);
-    addDaysInDate(&d1,addDays);
-    displayDate(&d1);
+    int choice;
+    do {
+       
+        printf("0. Exit\n");
+        printf("1. Sign In\n");
+        printf("2. Sign Up\n");
+        printf("3. Find difference between days\n");
+        printf("4. add days in given date\n");
+        // printf("");
+        printf("Enter Your Choice : ");
+        scanf("%d",&choice);
+        switch (choice)
+        {
+        case 0:
+             printf("Exiting....");
+             break;    
+        case 1:
+            signIn();
+            break;
+        case 2:
+            signUp();
+            break;
+        case 3:
+            //difference between days
+            differenceInDays = daysDiffer(&d1,&d2);
+            printf(" Difference Between Given Days %d", differenceInDays);  
+            break;  
+        case 4:
+            //add days in given date
+            
+            printf("Add days in given date is ");
+            scanf("%d",&addDays);
+            addDaysInDate(&d1,addDays);
+            displayDate(&d1);
+        default:
+             printf("Invalid Choice...Enter Valid choice");
+            break;
+        }
+    }while (choice != 0);
     
-    //difference between days
-    int DifferenceInDays = daysDiffer(&d1,&d2);
-    printf(" Difference Between Given Days %d", DifferenceInDays);
 }
 
