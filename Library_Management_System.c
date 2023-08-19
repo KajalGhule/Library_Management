@@ -147,7 +147,7 @@ int signUp() {
 }
 
 void ownerMenu() {
-    printf("@@@@");
+    printf("Inside owner menu");
 }
 
 void librarianMenu() {
